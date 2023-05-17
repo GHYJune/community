@@ -1,5 +1,6 @@
 package ghy.community.Controller;
 
+import ghy.community.dto.PaginationDTO;
 import ghy.community.dto.QuestionDTO;
 import ghy.community.mapper.QuestionMapper;
 import ghy.community.mapper.UserMapper;
@@ -24,7 +25,9 @@ public class IndexController {
     private QuestionService questionService;
     @GetMapping("/")
     public String index(HttpServletRequest request,
-                        Model model){
+                        Model model,
+                        @RequestParam(name = "page",defaultValue = "1") Integer page,
+                        @RequestParam(name = "size",defaultValue = "5") Integer size){
         Cookie[] cookies = request.getCookies();
         if(cookies!=null)
         {
@@ -42,8 +45,8 @@ public class IndexController {
             }
         }
 
-        List<QuestionDTO> questionList = questionService.list();
-        model.addAttribute("questions",questionList);
+        PaginationDTO paginationDTO = questionService.list(page, size);
+        model.addAttribute("pagination",paginationDTO);
         return "index";
     }
 }
